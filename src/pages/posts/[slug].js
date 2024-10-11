@@ -6,7 +6,6 @@ import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import Image from "next/image";
 import { NextSeo } from "next-seo";
-import remarkToc from "remark-toc";
 import rehypeSlug from "rehype-slug";
 import remarkPrism from "remark-prism";
 import React,{ createElement, Fragment } from "react";
@@ -15,7 +14,6 @@ import rehypeReact from "rehype-react";
 import Link from "next/link";
 import "prismjs/themes/prism-tomorrow.css";
 import remarkUnwrapImages from "remark-unwrap-images";
-import { toc } from "mdast-util-toc";
 import { visit } from "unist-util-visit";
 
 // カスタムコードのマークダウン変換処理
@@ -41,30 +39,6 @@ const customCode = () => {
         }
       }
     });
-  };
-};
-
-// 目次生成関数
-const getToc = (options) => {
-  return (node) => {
-    // nodeが適切な構造であるかを確認
-    if (!node || !node.children || !Array.isArray(node.children)) {
-      console.warn("Node structure is not valid for TOC generation");
-      node.children = [];
-      return;
-    }
-
-    // tocがnodeを処理して結果を返す
-    const result = toc(node, options);
-
-    // result.mapが存在するかをチェックし、存在しない場合は空の配列を設定
-    if (result.map) {
-      node.children = [result.map, ...node.children];
-    } else {
-      // result.mapが存在しない場合の処理
-      console.warn("No table of contents generated, node may not contain headings.");
-    node.children = [...node.children];
-    }
   };
 };
 
@@ -94,8 +68,6 @@ export async function getStaticProps({ params }) {
     const { data, content } = matter(file);
     console.log("Content:", content); // 追加: これで content の中身を確認します
     console.log("FrontMatter:", data);
-
-    // Normalize image path: remove leading slash if present
     if (data.image && data.image.startsWith('/')) {
       data.image = data.image.slice(1);
     }
@@ -103,10 +75,6 @@ export async function getStaticProps({ params }) {
   // マークダウン処理
   const result = await unified()
     .use(remarkParse)
-    .use(remarkToc, {
-      heading: "目次",
-      tight: true,
-    })
     .use(remarkPrism, {
       plugins: ["line-numbers"],
     })
@@ -117,22 +85,10 @@ export async function getStaticProps({ params }) {
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(content);
 
-  // 目次の処理
-  const tocResult = await unified()
-    .use(remarkParse)
-    .use(getToc, {
-      heading: "目次",
-      tight: true,
-    })
-    .use(remarkRehype)
-    .use(rehypeStringify)
-    .process(content)
-
   return {
     props: {
       frontMatter: data,
       content: result.toString(),
-      toc: tocResult.toString(),
       slug: params.slug,
     },
   };
@@ -198,7 +154,7 @@ const MyLink = ({ children, href }) => {
   );
 };
 
-const Post = ({ frontMatter, content, slug, toc, error, message }) => {
+const Post = ({ frontMatter, content, slug, error, message }) => {
   if (error) {
     return <p>{message}</p>;
   }
@@ -228,13 +184,10 @@ const Post = ({ frontMatter, content, slug, toc, error, message }) => {
       <div className="prose prose-lg max-w-none">
         <div className="border">
           <Image
-            src={frontMatter.image ? `/${frontMatter.image}` : "/default-image.JPG"}
+            src={`/${frontMatter.image}`}
             width={1200}
             height={700}
             alt={frontMatter.title}
-            onError={(e) => {
-              e.target.src = "/default-image.JPG"; // フォールバック画像
-            }}
           />
         </div>
         <h1 className="mt-12">{frontMatter.title}</h1>
@@ -251,12 +204,6 @@ const Post = ({ frontMatter, content, slug, toc, error, message }) => {
           )}
         </div>
         <div>{toReactNode(content) || "記事を読み込めませんでした。"}</div>
-        {/* {toc && (
-          <div className="toc">
-            <h2>目次</h2>
-            <div dangerouslySetInnerHTML={{ __html: toc }} />
-          </div>
-        )} */}
       </div>
     </>
   );

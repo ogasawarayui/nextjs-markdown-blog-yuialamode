@@ -5,8 +5,9 @@ import MarkdownIt from 'markdown-it';
 
 const PostCard = ({ post }) => {
   const md = new MarkdownIt();
-  const { title, description, date, image } = post.frontMatter;
+  const { title, description, date } = post.frontMatter;
   let imageSrc = post.frontMatter.image;
+
   if (imageSrc.startsWith('//')) {
     imageSrc = imageSrc.slice(1);
   }
@@ -29,7 +30,8 @@ const PostCard = ({ post }) => {
         </div>
         <div className="px-2 py-4">
           <h1 className="font-bold text-lg">{title}</h1>
-          <p className="text-gray-600">{description}</p>
+          {/* MarkdownItを使用してdescriptionをHTMLに変換 */}
+          <p className="text-gray-600" dangerouslySetInnerHTML={{ __html: md.render(description) }}/>
           <span className="text-gray-500">{date}</span>
         </div>
     </Link>
