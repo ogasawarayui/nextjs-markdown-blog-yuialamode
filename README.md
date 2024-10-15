@@ -33,7 +33,7 @@
 
 ## プロジェクト名
 
-nextjs-markdown-blog
+nextjs-markdown-blog-yuialamode
 
 <!-- プロジェクトについて -->
 
@@ -76,6 +76,8 @@ Markdownファイルを用いたブログ構築
 .
 ├── .env
 ├── .eslintrc.json
+├── .github
+│   └── workflows
 ├── .gitignore
 ├── README.md
 ├── components
@@ -93,13 +95,24 @@ Markdownファイルを用いたブログ構築
 ├── postcss.config.js
 ├── postcss.config.mjs
 ├── posts
-│   ├── laravel-vite.md
-│   └── next-js-markdown-blog.md
+│   ├── Contact.md
+│   ├── Information.md
+│   ├── Profile.md
+│   └── Schedule.md
 ├── public
-│   ├── favicon.ico
-│   ├── laravel.png
-│   ├── nextjs-welcome.png
-│   └── nextjs.png
+│   ├── .DS_Store
+│   ├── Information.png
+│   ├── Profile.png
+│   ├── SHOWROOM.png
+│   ├── contact.JPG
+│   ├── default-image.JPG
+│   ├── information.JPG
+│   ├── instagram.svg
+│   ├── profile.JPG
+│   ├── schedule.JPG
+│   ├── tiktok.svg
+│   ├── x.svg
+│   └── youtube.svg
 ├── src
 │   ├── pages
 │   └── styles
