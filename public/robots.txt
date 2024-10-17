@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://nextjs-markdown-blog-yuialamode.vercel.app/
+
+# Sitemaps
+Sitemap: https://nextjs-markdown-blog-yuialamode.vercel.app/sitemap.xml
