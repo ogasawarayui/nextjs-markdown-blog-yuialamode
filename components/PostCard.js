@@ -8,12 +8,16 @@ const PostCard = ({ post }) => {
   const { title, description, date } = post.frontMatter;
   let imageSrc = post.frontMatter.image;
 
+  console.log("Image Source:", imageSrc);
+
   if (imageSrc.startsWith('//')) {
     imageSrc = imageSrc.slice(1);
   }
   if (!imageSrc.startsWith('/')) {
     imageSrc = `/${imageSrc}`;
   }
+
+  console.log("Description:", description);
 
   return (
     <Link href={`/posts/${post.slug}`}>

@@ -1,5 +1,7 @@
 import fs from "fs";
 import matter from "gray-matter";
+import { useState } from "react";
+import { useMediaQuery } from "react-responsive";
 import Pagination from "components/Pagination";
 import PostCard from "components/PostCard";
 
@@ -14,10 +16,8 @@ interface Post {
   slug: string;
 }
 
-const PAGE_SIZE = 4;
-
-const range = (start: number, end: number, length = end - start + 1): number[] =>
-  Array.from({ length }, (_, i) => start + i);
+const range = (start: number, end: number): number[] =>
+  Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
 export const getStaticProps = async () => {
   try {
@@ -32,7 +32,6 @@ export const getStaticProps = async () => {
     const slug = fileName.replace(/\.md$/, "");
     const fileContent = fs.readFileSync(`posts/${fileName}`, "utf-8");
     const { data } = matter(fileContent);
-
     // titleやdateが存在しない場合はエラー
     if (!data.title || !data.date) {
       throw new Error(`Invalid front matter in ${fileName}`);
@@ -50,13 +49,9 @@ export const getStaticProps = async () => {
     return dateB.getTime() - dateA.getTime(); // 新しい日付が先になるように
 });
 
-  // ページ数の計算
-  const pages = range(1, Math.ceil(posts.length / PAGE_SIZE));
-
   return {
     props: {
-      posts: sortedPosts.slice(0, PAGE_SIZE),// ページごとの表示件数に制限
-      pages,
+      posts: sortedPosts,
     },
   };
 } catch (error) {
@@ -64,24 +59,40 @@ export const getStaticProps = async () => {
   return {
     props: {
       posts: [],
-      pages: [],
     },
   };
 }
 };
 
 
-export default function Home({ posts, pages }: { posts: Post[]; pages: number[] }) {
+export default function Home({ posts }: { posts: Post[] }) {
+  const [currentPage] = useState<number>(1);  // currentPageの型も明示的に指定
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const pageSize = isMobile ? 1 : 4;
+
+  const totalPages = Math.ceil(posts.length / pageSize);
+  const pages = range(1, totalPages); // pagesを定義
+
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  const paginatedPosts = posts.slice(start, end);
+
   return (
     <div className="my-8 flex flex-wrap">
-      <div className="grid grid-cols-4 gap-4">
-      {posts.length > 0 ? (
-          posts.map((post) => <PostCard key={post.slug} post={post} />)
+      <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-4'} gap-4`}>
+      {paginatedPosts.length > 0 ? (
+          paginatedPosts.map((post) => <PostCard key={post.slug} post={post} />)
         ) : (
           <p>投稿がありません。</p>
         )}
       </div>
-      {pages.length > 0 && <Pagination pages={pages} current_page={1} />}
+
+      {pages.length > 0 && (
+      <Pagination
+      pages={pages}
+      current_page={currentPage}
+      />
+    )}
     </div>
   );
 }

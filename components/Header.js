@@ -4,9 +4,14 @@ import Image from 'next/image';
 const Header = () => {
   return (
     <header className="sticky top-0 border-b z-10 bg-white">
-      <div className="max-w-4xl mx-auto flex justify-between items-center h-12">
-        <Link href="/" className="text-2xl font-bold">
+      <div className="max-w-4xl mx-auto flex justify-between items-center h-12 px-2">
+        {/* デスクトップ版では「新咲結菜 OFFICIAL WEBSITE」を表示 */}
+        <Link href="/" className="text-2xl font-bold hidden sm:block whitespace-nowrap">
           新咲結菜 OFFICAL WEBSITE
+        </Link>
+        {/* モバイル版では「新咲結菜」だけを表示 */}
+        <Link href="/" className="text-2xl sm:text-base font-bold sm:hidden">
+          新咲結菜
         </Link>
         <div className="flex space-x-4">
         <Link href="https://twitter.com/@yuialamode">
