@@ -17,11 +17,11 @@ export const getStaticProps = ({ params }) => {
   const category = params.category;
 
   const filteredPosts = posts.filter((post) => {
-    return post.frontMatter.categories.includes(category);
+    return post.frontMatter.categories && post.frontMatter.categories.includes(category);
   });
 
   const sortedPosts = filteredPosts.sort((postA, postB) =>
-    new Date(postA.frontMatter.date) > new Date(postB.frontMatter.date) ? -1 : 1
+    new Date(postB.frontMatter.date) - new Date(postA.frontMatter.date)
   );
 
   return {

@@ -66,7 +66,7 @@ export const getStaticProps = async () => {
 
 
 export default function Home({ posts }: { posts: Post[] }) {
-  const [currentPage] = useState<number>(1);  // currentPageの型も明示的に指定
+  const [currentPage, setCurrentPage] = useState<number>(1);  // currentPageの型も明示的に指定
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const pageSize = isMobile ? 1 : 4;
 
@@ -76,6 +76,11 @@ export default function Home({ posts }: { posts: Post[] }) {
   const start = (currentPage - 1) * pageSize;
   const end = start + pageSize;
   const paginatedPosts = posts.slice(start, end);
+
+    // ページが変更されたときの処理
+    const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+    };
 
   return (
     <div className="my-8 flex flex-wrap">
@@ -91,6 +96,7 @@ export default function Home({ posts }: { posts: Post[] }) {
       <Pagination
       pages={pages}
       current_page={currentPage}
+      onPageChange={handlePageChange}// onPageChangeを渡す
       />
     )}
     </div>

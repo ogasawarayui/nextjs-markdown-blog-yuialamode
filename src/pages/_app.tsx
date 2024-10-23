@@ -16,6 +16,7 @@ const GA_TRACKING_ID = 'G-JZ1WSV6MWZ';
 const handleRouteChange = (url: string) => {
   window.gtag('config', GA_TRACKING_ID, {
     page_path: url,
+    cookie_flags: 'SameSite=None; Secure'  // Cookie設定を追加
   });
 };
 
@@ -47,6 +48,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             gtag('js', new Date());
             gtag('config', '${GA_TRACKING_ID}', {
               page_path: window.location.pathname,
+              cookie_flags: 'SameSite=None; Secure'  // Cookie設定を追加
             });
           `,
         }}

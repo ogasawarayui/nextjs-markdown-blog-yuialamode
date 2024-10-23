@@ -5,40 +5,43 @@ import PostCard from "components/PostCard";
 
 const PAGE_SIZE = 4;
 
-const range = (start, end, length = end - start + 1) =>
-  Array.from({ length }, (_, i) => start + i);
+const range = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
 export async function getStaticProps({ params }) {
   const current_page = params?.page ? parseInt(params.page, 10) : 1;
+
+  // 例外処理を追加
+  let posts = [];
+  try {
   const files = fs.readdirSync("posts");
-  const posts = files.map((fileName) => {
+  posts = files.map((fileName) => {
     const slug = fileName.replace(/\.md$/, "");
     const fileContent = fs.readFileSync(`posts/${fileName}`, "utf-8");
-
-    console.log("File Content:", fileContent);
-
     const { data } = matter(fileContent);
-
     return {
       frontMatter: data,
       slug,
     };
   });
+} catch (error) {
+  console.error("Error reading posts:", error);
+  return {
+    notFound: true, // エラー発生時に404ページを表示
+  };
+}
 
-  console.log("Posts:", posts);
-
-  // Sort posts by date (latest first)
+  // 投稿を日付でソート（最新のものが最初）
   const sortedPosts = posts.sort((postA, postB) =>
-    new Date(postA.frontMatter.date) > new Date(postB.frontMatter.date) ? -1 : 1
+    new Date(postB.frontMatter.date) - new Date(postA.frontMatter.date)
   );
 
-  // Slice the posts for the current page
+  // 現在のページ用に投稿をスライス
   const slicedPosts = sortedPosts.slice(
     PAGE_SIZE * (current_page - 1),
     PAGE_SIZE * current_page
   );
 
-  // Pagination info
+  // ページ情報
   const totalPages = Math.ceil(posts.length / PAGE_SIZE);
   const pages = range(1, totalPages);
 
@@ -70,7 +73,7 @@ const Page = ({ posts, pages, current_page }) => {
   if (!posts || posts.length === 0) {
     return <div>Loading...</div>; // フォールバックの間に表示する内容
   }
-  console.log(posts);
+
   return (
     <div className="my-8">
       <div className="grid grid-cols-1 gap-4">

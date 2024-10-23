@@ -46,8 +46,17 @@ const customCode = () => {
 
 // Markdownファイルの読み込み
 export async function getStaticProps({ params }) {
+  const slug = params.slug;
+
+  // ファイルの存在を確認
+  if (!fs.existsSync(`posts/${slug}.md`)) {
+    return {
+      notFound: true,
+    };
+  }
+
   try {//fs.readFileSyncを使って、postsというフォルダにあるMarkdownファイル（.mdファイル）を読み込む
-    const file = fs.readFileSync(`posts/${params.slug}.md`, "utf-8");
+    const file = fs.readFileSync(`posts/${slug}.md`, "utf-8");
     const { data, content } = matter(file);//gray-matterというライブラリを使って、記事のタイトルや日付などのメタデータと、記事の内容に分けています。
     console.log("Content:", content);//実際のMarkdown形式の文章（記事の本文）が入っています。
     console.log("FrontMatter:", data);//記事のタイトルや日付、画像のURLなど、記事の基本的な情報が含まれます。
