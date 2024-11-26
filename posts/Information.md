@@ -7,8 +7,8 @@ categories: ['記事一覧']
 ---
 
 ## LIVEなど新着情報を更新してます
-11/23 アトリエそら豆さんOpenMic JAZZ&ボサノバ</br>17時30分OPEN 18時START　MC 3500円（フード&ドリンク込み）</br></br>
-12/7 アトリエそら豆さんOpenMic　店主BirthdayLive</br>17時30分OPEN 18時START　MC 3500円（フード&ドリンク込み）
+12/7 羽野誠司 バースデーギターライブ</br>18時OPEN 19時START　MC 3000円（+フード&ドリンク2オーダー）</br></br>
+1/25 えりぽんBirthdayLive</br>14時30分OPEN 15時START　MC 3500円（フード&ドリンク込み）
 
 ### 住所
 アトリエそら豆</br>
