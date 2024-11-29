@@ -43,17 +43,22 @@ function MyApp({ Component, pageProps }: AppProps) {
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_TRACKING_ID}', {
-              page_path: window.location.pathname,
-              cookie_flags: 'SameSite=None; Secure'  // Cookie設定を追加
-            });
-          `,
-        }}
-      />
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
+          // サードパーティCookie制限への対応: Cookie設定を明確に定義
+          gtag('config', '${GA_TRACKING_ID}', {
+            page_path: window.location.pathname,
+            cookie_flags: 'SameSite=None; Secure', // Secureフラグを付与し、SameSiteを指定
+            anonymize_ip: true,                   // ユーザーのIPアドレスを匿名化
+            consent_mode: {
+              analytics_storage: 'granted',      // 必要に応じて 'denied' を指定
+            }
+          });
+        `,
+      }}
+    />
     <Layout>
       <DefaultSeo {...SEO} />
       <Component {...pageProps} />
